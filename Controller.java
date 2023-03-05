@@ -62,8 +62,8 @@ class Controller {
     }
 
     void changeMenu() {
-        System.out.println("\tМеню изменения информации");
         System.out.print("\033[H\033[2J");
+        System.out.println("\tМеню изменения информации");
         System.out.println(v.chacgeMenu[0]);
         System.out.println(v.chacgeMenu[1]);
         System.out.println(v.chacgeMenu[2]);
