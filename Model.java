@@ -12,10 +12,11 @@ class Model {
         String title;
         int count;
         int dropChance;
-        
+
         do {
             System.out.print("\033[H\033[2J");
-            if(sw.toys.size() > 0) sw.showToys();
+            if (sw.toys.size() > 0)
+                sw.showToys();
             System.out.println("Заполните данные о товаре:");
 
             System.out.print(idInfo + ": ");
@@ -33,6 +34,72 @@ class Model {
             sw.toys.add(new Toy(id, title, count, dropChance));
             System.out.print("\nДобавить ещё игрушки? (д/н): ");
         } while (!sc.nextLine().equalsIgnoreCase("н"));
+    }
+
+    void changeId(String idInfo) {
+        if (sw.toys.size() == 0) {
+            sw.showAllToys();
+        } else {
+            do {
+                System.out.print("\033[H\033[2J");
+                sw.showToys();
+                System.out.print("Введите Id Игрушки чтобы изменить её Id: ");
+                int index = findIdToys(checkingNumber(idInfo));
+                if (index == (-1)) {
+                    System.out.println("Игрушка с таким Id не найдена!");
+                    System.out.println("Нажмите ENTER, чтобы продолжить или введите \"н\", чтобы выйти.");
+                } else {
+                    toy = sw.toys.get(index);
+                    System.out.printf("Введите новый Id для игрушки \"%s\" (id: %s): ", toy.title, toy.id);
+                    toy.id = uniqueID(checkingNumber(idInfo));
+                    System.out.print("Изменить Id для другой игрушки? (д/н): ");
+                }
+            } while (!sc.nextLine().equalsIgnoreCase("н"));
+        }
+    }
+
+    void changeTitle(String idInfo) {
+        if (sw.toys.size() == 0) {
+            sw.showAllToys();
+        } else {
+            do {
+                System.out.print("\033[H\033[2J");
+                sw.showToys();
+                System.out.print("Введите Id Игрушки чтобы изменить её название: ");
+                int index = findIdToys(checkingNumber(idInfo));
+                if (index == (-1)) {
+                    System.out.println("Игрушка с таким Id не найдена!");
+                    System.out.println("Нажмите ENTER, чтобы продолжить или введите \"н\", чтобы выйти.");
+                } else {
+                    toy = sw.toys.get(index);
+                    System.out.printf("Введите новое название для игрушки \"%s\" (id: %s): ", toy.title, toy.id);
+                    toy.title = sc.nextLine();
+                    System.out.print("Изменить название для другой игрушки? (д/н): ");
+                }
+            } while (!sc.nextLine().equalsIgnoreCase("н"));
+        }
+    }
+
+    void changeCount(String idInfo, String countInfo) {
+        if (sw.toys.size() == 0) {
+            sw.showAllToys();
+        } else {
+            do {
+                System.out.print("\033[H\033[2J");
+                sw.showToys();
+                System.out.print("Введите Id Игрушки чтобы изменить количество: ");
+                int index = findIdToys(checkingNumber(idInfo));
+                if (index == (-1)) {
+                    System.out.println("Игрушка с таким Id не найдена!");
+                    System.out.println("Нажмите ENTER, чтобы продолжить или введите \"н\", чтобы выйти.");
+                } else {
+                    toy = sw.toys.get(index);
+                    System.out.printf("Введите новое количество игрушек \"%s\" (id: %s): ", toy.title, toy.id);
+                    toy.count = checkingNumber(countInfo);
+                    System.out.print("Изменить количесвтво для других игрушек? (д/н): ");
+                }
+            } while (!sc.nextLine().equalsIgnoreCase("н"));
+        }
     }
 
     void changeDropChance(String idInfo, String dropChanceInfo) {
@@ -54,6 +121,34 @@ class Model {
                     System.out.print("Изменить шанс для другой игрушки? (д/н): ");
                 }
             } while (!sc.nextLine().equalsIgnoreCase("н"));
+        }
+    }
+
+    void delToy(String idInfo) {
+        String chose = "";
+        if (sw.toys.size() == 0) {
+            sw.showAllToys();
+        } else {
+            do {
+                System.out.print("\033[H\033[2J");
+                sw.showToys();
+                System.out.print("Введите Id Игрушки чтобы удалить её, для отмены введите (н): ");
+                int index = findIdToys(checkingNumber(idInfo));
+                if (index != -2) {
+                    if (index == (-1)) {
+                        System.out.println("Игрушка с таким Id не найдена!");
+                        System.out.println("Нажмите ENTER, чтобы продолжить...");
+                        sc.nextLine();
+                    } else {
+                        toy = sw.toys.get(index);
+                        System.out.printf("Вы уверены, что хотите удалить игрушку \"%s\" (id: %s)? (д/н): ", toy.title,
+                                toy.id);
+                        chose = sc.nextLine();
+                        if (!chose.equalsIgnoreCase("н"))
+                            sw.toys.remove(index);
+                    }
+                } else chose = "н";
+            } while (!chose.equalsIgnoreCase("н"));
         }
     }
 
@@ -93,19 +188,22 @@ class Model {
         int num;
         while (true) {
             String input = sc.nextLine();
-            try {
-                num = Integer.parseInt(input);
-                return num;
-            } catch (NumberFormatException ex) {
-               
-                System.out.printf("Пожалуйста введите %s ЧИСЛОМ: ", info);
-            }
-        }
+            if (!input.equalsIgnoreCase("н")) {
+                try {
+                    num = Integer.parseInt(input);
+                    return num;
+                } catch (NumberFormatException ex) {
 
+                    System.out.printf("Пожалуйста введите %s ЧИСЛОМ: ", info);
+                }
+            } else
+                return -2;
+        }
     }
 
     int findIdToys(int id) {
         int index = -1;
+        if (id == -2) return -2;
         for (int i = 0; i < sw.toys.size(); i++) {
             if (id == sw.toys.get(i).id) {
                 index = i;
@@ -138,11 +236,11 @@ class Model {
             if (num >= 0 && num <= 100) {
                 return num;
             } else {
-                    System.out.println("Шанс выпадения игрушки находиться в промежутке от 0 до 100!");
-                    System.out.print("Повторите ввод шанса для выпадения: ");
+                System.out.println("Шанс выпадения игрушки находиться в промежутке от 0 до 100!");
+                System.out.print("Повторите ввод шанса для выпадения: ");
             }
         }
-        
+
     }
 
 }
